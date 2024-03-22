@@ -19,13 +19,15 @@ export default function Generator() {
     return ( // unlike in our App.jsx the Generator.jsx must have an opening and closing component
     <SectionWrapper header={"generate your workout"} title={['It\'s', 'Grind', 'Time']}>
         <Header index={'01'} title={'Workout Select'} description={"Select the workout that you would like to complete"} />
+        <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'> 
         {Object.keys(WORKOUTS).map((type, typeIndex) => {
             return (
-                <button key={typeIndex}>
+                <button className='bg-slate-950 border border-blue-400 duration-200 hover:border-blue-600 py-3 rounded-lg' key={typeIndex}>
                     <p>{type}</p>
                 </button>
             )
         })}
-    </SectionWrapper>
+        </div> 
+    </SectionWrapper> // div className puts buttons in correct location, button className styles those buttons.
     )
 }
