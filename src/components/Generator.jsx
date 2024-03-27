@@ -1,4 +1,4 @@
-import React from "react";
+import React,{ useState } from "react";
 import SectionWrapper from "./SectionWrapper";
 import { WORKOUTS } from "../utils/exercise";
 
@@ -16,6 +16,13 @@ function Header(props){
 }
 
 export default function Generator() {
+    const [showModal, setShowModal] = useState(false) //importing useState and makes this a REACT stateful variable
+    //let showModal = false  
+
+    function toggleModal() {
+        setShowModal(!showModal)
+    }
+
     return ( // unlike in our App.jsx the Generator.jsx must have an opening and closing component
     <SectionWrapper header={"generate your workout"} title={['It\'s', 'Grind', 'Time']}>
         <Header index={'01'} title={'Workout Select'} description={"Select the workout that you would like to complete"} />
@@ -23,10 +30,20 @@ export default function Generator() {
         {Object.keys(WORKOUTS).map((type, typeIndex) => {
             return (
                 <button className='bg-slate-950 border border-blue-400 duration-200 hover:border-blue-600 py-3 rounded-lg' key={typeIndex}>
-                    <p>{type}</p>
+                    <p className='capitalize'>{type.replaceAll('_', " ")}</p>
                 </button>
             )
         })}
+        </div> 
+        <Header index={'02'} title={'Whats your target?'} description={"Select the muscles you'd like to work."} />
+        <div className='bg-slate-950 border border-solid border-blue-400 rounded-lg flex flex-col'> 
+            <button onClick={toggleModal} className='relative p-3 flex items-center justify-center'>
+                <p>Select Muscle Groups</p>
+                <i className="fa-solid absolute right-3 top-1/2 -translate-y-1/2 fa-caret-down"></i>
+            </button>
+            {showModal && (
+                <div>modal</div>
+            )}
         </div> 
     </SectionWrapper> // div className puts buttons in correct location, button className styles those buttons.
     )
