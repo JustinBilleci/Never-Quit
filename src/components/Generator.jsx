@@ -19,12 +19,32 @@ export default function Generator() {
     const [showModal, setShowModal] = useState(false) //importing useState and makes this a REACT stateful variable
     const [workout, setWorkout] = useState('individual')
     const [muscles, setMuscles] = useState([])
-    const [goals, setGoals] = useState('strength_power')
-    //let showModal = false  
-
-    function toggleModal() {
+    const [goal, setGoal] = useState('strength_power') 
+    //let showModal = false 
+    function toggleModal() { 
         setShowModal(!showModal)
     }
+
+    function updateMuscles(muscleGroup) {
+
+        if (muscles.includes(muscleGroup)) {
+            setMuscles(muscles.filter(val => val !== muscleGroup))
+            return
+        }
+
+        if (muscles.length > 2) {
+            return
+        }
+
+    if (workout !== 'individual') {
+        setMuscles([muscleGroup])
+        return
+    }
+
+    setMuscles([...muscles, muscleGroup])
+
+    }
+
 
     return ( // unlike in our App.jsx the Generator.jsx must have an opening and closing component
     <SectionWrapper header={"generate your workout"} title={['It\'s', 'Grind', 'Time']}>
@@ -32,8 +52,10 @@ export default function Generator() {
         <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'> 
         {Object.keys(WORKOUTS).map((type, typeIndex) => {
             return (
-                <button className='bg-slate-950 border border-blue-400 duration-200 hover:border-blue-600 py-3 rounded-lg' key={typeIndex}>
-                    <p className='capitalize'>{type.replaceAll('_', " ")}</p>
+                <button onClick={() => {
+                    setWorkout(type)
+                }} className={'bg-slate-950 border duration-200 hover:border-blue-600 py-3 rounded-lg ' + (type === workout ? ' border-blue-600' : ' border-blue-400')} key={typeIndex}>
+                    <p className='Capitalize'>{type.replaceAll('_', " ")}</p>
                 </button>
             )
         })}
@@ -45,14 +67,26 @@ export default function Generator() {
                 <i className="fa-solid absolute right-3 top-1/2 -translate-y-1/2 fa-caret-down"></i>
             </button>
             {showModal && (
-                <div>modal</div>
+                <div className='flex flex-col p-3'>
+                    {(workout === 'individual' ? WORKOUTS[workout] : Object.keys(WORKOUTS[workout])).map((muscleGroup, muscleGroupIndex) => {
+                        return (
+                            <button onClick={() => {
+                                updateMuscles(muscleGroup)
+                            }} key={muscleGroupIndex} className={' hover:text-blue-400 duration-200 ' + (muscles.includes(muscleGroup) ? ' text-blue-400' : ' ')}>
+                                <p className='uppercase'>{muscleGroup}</p>
+                            </button>
+                        )
+                    })}
+                </div>
             )}
         </div> 
-        <Header index={'03'} title={'Goals'} description={"Select the the goals that best suit you're needs."} />
+        <Header index={'03'} title={'Goal'} description={"Select the the goal that best fits you're needs."} />
         <div className='grid grid-cols-3 gap-4'> 
         {Object.keys(SCHEMES).map((scheme, schemeIndex) => {
             return (
-                <button className='bg-slate-950 border border-blue-400 duration-200 hover:border-blue-600 py-3 rounded-lg' key={schemeIndex}>
+                <button onClick={() => {
+                    setGoal(scheme)
+                }} className={'bg-slate-950 border duration-200 hover:border-blue-600 py-3 rounded-lg ' + (scheme === goal ? ' border-blue-600' : ' border-blue-400')} key={schemeIndex}>
                     <p className='capitalize'>{scheme.replaceAll('_', " ")}</p>
                 </button>
             )
