@@ -1,6 +1,6 @@
 import React,{ useState } from "react";
 import SectionWrapper from "./SectionWrapper";
-import { WORKOUTS } from "../utils/exercise";
+import { SCHEMES, WORKOUTS } from "../utils/exercise";
 
 function Header(props){
     const {index, title, description} = props
@@ -17,6 +17,9 @@ function Header(props){
 
 export default function Generator() {
     const [showModal, setShowModal] = useState(false) //importing useState and makes this a REACT stateful variable
+    const [workout, setWorkout] = useState('individual')
+    const [muscles, setMuscles] = useState([])
+    const [goals, setGoals] = useState('strength_power')
     //let showModal = false  
 
     function toggleModal() {
@@ -44,6 +47,16 @@ export default function Generator() {
             {showModal && (
                 <div>modal</div>
             )}
+        </div> 
+        <Header index={'03'} title={'Goals'} description={"Select the the goals that best suit you're needs."} />
+        <div className='grid grid-cols-3 gap-4'> 
+        {Object.keys(SCHEMES).map((scheme, schemeIndex) => {
+            return (
+                <button className='bg-slate-950 border border-blue-400 duration-200 hover:border-blue-600 py-3 rounded-lg' key={schemeIndex}>
+                    <p className='capitalize'>{scheme.replaceAll('_', " ")}</p>
+                </button>
+            )
+        })}
         </div> 
     </SectionWrapper> // div className puts buttons in correct location, button className styles those buttons.
     )
