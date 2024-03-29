@@ -1,6 +1,7 @@
 import React,{ useState } from "react";
 import SectionWrapper from "./SectionWrapper";
 import { SCHEMES, WORKOUTS } from "../utils/exercise";
+import Button from "./Button";
 
 function Header(props){
     const {index, title, description} = props
@@ -15,12 +16,12 @@ function Header(props){
     )
 }
 
-export default function Generator() {
+export default function Generator(props) {
+    const {muscles, setMuscles, poison, setPoison, goal, setGoal, updateWorkout} = props
     const [showModal, setShowModal] = useState(false) //importing useState and makes this a REACT stateful variable
-    const [workout, setWorkout] = useState('individual')
-    const [muscles, setMuscles] = useState([])
-    const [goal, setGoal] = useState('strength_power') 
+
     //let showModal = false 
+
     function toggleModal() { 
         setShowModal(!showModal)
     }
@@ -36,39 +37,43 @@ export default function Generator() {
             return
         }
 
-    if (workout !== 'individual') {
+    if (poison !== 'individual') {
         setMuscles([muscleGroup])
+        setShowModal(false) //will close workout select by default
         return
     }
 
     setMuscles([...muscles, muscleGroup])
-
+    if (muscles.length === 2) {
+        setShowModal(false)
+    }
     }
 
 
     return ( // unlike in our App.jsx the Generator.jsx must have an opening and closing component
-    <SectionWrapper header={"generate your workout"} title={['It\'s', 'Grind', 'Time']}>
-        <Header index={'01'} title={'Workout Select'} description={"Select the workout that you would like to complete"} />
+    <SectionWrapper id={'generate'} header={"generate your workout"} title={['It\'s', 'Grind', 'Time']}>
+        <Header index={'01'} title={'Pick your poison'} description={"Select the workout that you would like to complete"} />
         <div className='grid grid-cols-2 sm:grid-cols-4 gap-4'> 
         {Object.keys(WORKOUTS).map((type, typeIndex) => {
             return (
                 <button onClick={() => {
-                    setWorkout(type)
-                }} className={'bg-slate-950 border duration-200 hover:border-blue-600 py-3 rounded-lg ' + (type === workout ? ' border-blue-600' : ' border-blue-400')} key={typeIndex}>
+                    setMuscles([])
+                    setPoison(type)
+                }} className={'bg-slate-950 border duration-200 px-4 hover:border-blue-600 py-3 rounded-lg ' + (type === poison ? ' border-blue-600' : ' border-blue-400')} key={typeIndex}>
                     <p className='Capitalize'>{type.replaceAll('_', " ")}</p>
                 </button>
             )
         })}
         </div> 
-        <Header index={'02'} title={'Whats your target?'} description={"Select the muscles you'd like to work."} />
+        <Header index={'02'} title={'Whats your target?'} description={"Select the 3 muscle groups you'd like to work on."} />
         <div className='bg-slate-950 border border-solid border-blue-400 rounded-lg flex flex-col'> 
             <button onClick={toggleModal} className='relative p-3 flex items-center justify-center'>
-                <p>Select Muscle Groups</p>
+                <p className='capitalize'>{muscles.length == 0 ? 'Select Muscle Groups' : muscles.join(' ')}</p>
                 <i className="fa-solid absolute right-3 top-1/2 -translate-y-1/2 fa-caret-down"></i>
             </button>
             {showModal && (
                 <div className='flex flex-col p-3'>
-                    {(workout === 'individual' ? WORKOUTS[workout] : Object.keys(WORKOUTS[workout])).map((muscleGroup, muscleGroupIndex) => {
+                    {(poison === 'individual' ? WORKOUTS[poison] : Object.keys(WORKOUTS[poison])).map((muscleGroup, muscleGroupIndex) => {
                         return (
                             <button onClick={() => {
                                 updateMuscles(muscleGroup)
@@ -81,17 +86,18 @@ export default function Generator() {
             )}
         </div> 
         <Header index={'03'} title={'Goal'} description={"Select the the goal that best fits you're needs."} />
-        <div className='grid grid-cols-3 gap-4'> 
+        <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'> 
         {Object.keys(SCHEMES).map((scheme, schemeIndex) => {
             return (
                 <button onClick={() => {
                     setGoal(scheme)
-                }} className={'bg-slate-950 border duration-200 hover:border-blue-600 py-3 rounded-lg ' + (scheme === goal ? ' border-blue-600' : ' border-blue-400')} key={schemeIndex}>
+                }} className={'bg-slate-950 border duration-200 px-4 hover:border-blue-600 py-3 rounded-lg ' + (scheme === goal ? ' border-blue-600' : ' border-blue-400')} key={schemeIndex}>
                     <p className='capitalize'>{scheme.replaceAll('_', " ")}</p>
                 </button>
             )
         })}
         </div> 
+        <Button func={updateWorkout} text={"Formulate"}></Button>
     </SectionWrapper> // div className puts buttons in correct location, button className styles those buttons.
     )
 }
